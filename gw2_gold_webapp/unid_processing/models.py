@@ -41,74 +41,63 @@ class CustomUser(AbstractUser):
         return self.username
     
 class User_Default_Salvage_Rates(models.Model):
+    # TODO: Convert rarity to choice field
     user = models.ForeignKey(CustomUser, on_delete = models.CASCADE)
     item_id = models.IntegerField(primary_key = True, unique = True)
     item_name = models.ForeignKey(GW2_Items, on_delete = models.CASCADE)
+    rarity = models.CharField()
     salvage_rate = models.DecimalField(max_digits = 4, decimal_places = 2, null = True)
 
     def __str__(self) -> str:
         return (f'item = {self.item_name}, salvage rate = {self.salvage_rate}')
 
-class User_Default_Blue_Salvage_Rates(User_Default_Salvage_Rates):
-    pass
 
-class User_Default_Green_Salvage_Rates(User_Default_Salvage_Rates):
-    pass
-
-class User_Default_Yellow_Salvage_Rates(User_Default_Salvage_Rates):
-    pass
-
-class Raw_User_Storage(models.Model):
+class _Raw_User_Storage(models.Model):
     user = models.ForeignKey(CustomUser, on_delete = models.CASCADE)
     time = models.DateTimeField(auto_now_add = True)
     id = models.IntegerField(primary_key = True)
     name = models.ForeignKey(GW2_Items, on_delete = models.CASCADE)
     count = models.IntegerField(null = True)
 
-class Raw_User_Shared_Inventory_Data(Raw_User_Storage):
+class Raw_User_Shared_Inventory_Data(_Raw_User_Storage):
     pass
 
-class Raw_User_Inventory_Data(Raw_User_Storage):
+class Raw_User_Inventory_Data(_Raw_User_Storage):
     pass
 
-class Raw_User_Bank_Data(Raw_User_Storage):
+class Raw_User_Bank_Data(_Raw_User_Storage):
     pass
 
-class Processed_User_Storage(models.Model):
+class _Processed_User_Storage(models.Model):
     user = models.ForeignKey(CustomUser, on_delete = models.CASCADE)
     time = models.DateTimeField(auto_now_add = True)
     id = models.IntegerField(primary_key = True, unique = True)
     name = models.ForeignKey(GW2_Items, on_delete = models.CASCADE)
     count = models.IntegerField(null = True)
 
-class User_Shared_Inventory(Processed_User_Storage):
+class User_Shared_Inventory(_Processed_User_Storage):
     # Note: aggragate stacks of the same items when deserializing
     pass
 
-class User_Inventory(Processed_User_Storage):
+class User_Inventory(_Processed_User_Storage):
     # Note: aggragate stacks of the same items when deserializing
     pass
 
-class User_Bank(Processed_User_Storage):
+class User_Bank(_Processed_User_Storage):
     # Note: aggragate stacks of the same items when deserializing
     pass
 
-class User_Materials(Processed_User_Storage):
+class User_Materials(_Processed_User_Storage):
     pass
 
-class User_Salvage_Data(models.Model):
+class User_Salvage_Results(models.Model):
+    # TODO: Convert rarity to choice field
     username = models.ForeignKey(CustomUser, on_delete = models.CASCADE)
     salvaged_item_count = models.IntegerField()
     item_id = models.IntegerField()
+    rarity = models.CharField()
     item_count = models.IntegerField()
 
-class User_Blue_Salvage_Data(User_Salvage_Data):
-    pass
 
-class User_Green_Salvage_Data(User_Salvage_Data):
-    pass
-
-class User_Yellow_Salvage_Data(User_Salvage_Data):
-    pass
 
 
