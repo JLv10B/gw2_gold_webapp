@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'gw2_gold_webapp',
     'unid_processing',
     'rest_framework',
 ]
