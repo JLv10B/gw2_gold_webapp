@@ -56,6 +56,8 @@ def data_dump_view(request):
     2.) Create a file with the data
     3.) Save the file to local
     """
+    
+    
     response = HttpResponse(headers={"Content-Type": "text/plain",
                                      "Content-Disposition": 'attachment; filename="test.txt"'},)
     
