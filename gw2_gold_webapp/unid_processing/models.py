@@ -66,10 +66,7 @@ class User_Materials_Data(_User_Storage):
     pass
 
 class User_Wallet_Data(_User_Storage):
-    user = models.ForeignKey(CustomUser, on_delete = models.CASCADE)
-    time_recorded = models.DateTimeField(auto_now_add = True)
     currency_id = models.IntegerField(primary_key = True)
-    item_count = models.IntegerField(null = True)
 
 class User_Salvage_Results(models.Model):
     username = models.ForeignKey(CustomUser, on_delete = models.CASCADE)
