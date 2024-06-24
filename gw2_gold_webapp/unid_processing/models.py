@@ -28,7 +28,7 @@ class GW2_Items(models.Model):
     def __str__(self) -> str:
         return self.item_name
 
-class User(AbstractUser):
+class CustomUser(AbstractUser):
     username = models.CharField(max_length = 40, unique = True)
     password = models.CharField(max_length = 100)
     email = models.EmailField(max_length = 100)
@@ -38,7 +38,7 @@ class User(AbstractUser):
         return self.username
     
 class _User_Storage(models.Model):
-    user = models.ForeignKey(User, on_delete = models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete = models.CASCADE)
     time_recorded = models.DateTimeField(auto_now_add = True)
     item_id = models.IntegerField()
     item_count = models.IntegerField(null = True)
@@ -60,7 +60,7 @@ class User_Wallet_Data(_User_Storage):
 
 class User_Salvage_Records(models.Model):
     record_number = models.IntegerField(primary_key=True, unique=True)
-    user = models.ForeignKey(User, on_delete = models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete = models.CASCADE)
     salvaged_date = models.DateTimeField()
     salvaged_item_id = models.IntegerField()
 
@@ -76,15 +76,13 @@ class User_Outcome_Data(models.Model):
         return (f'item = {self.gained_item_id}, count = {self.gained_item_count}')
     
 class User_Salvage_Rates(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     gained_item_id = models.ForeignKey(GW2_Items, on_delete=models.CASCADE)
     blue_salvage_rate = models.DecimalField()
     green_salvage_rate = models.DecimalField()
     yellow_salvage_rate = models.DecimalField()
 
     def __str__(self) -> str:
-        return (f'blue slavage rate = {self.blue_salvage_rate}\n 
-                green salvage rate = {self.green_salvage_rate}\n 
-                yellow salvage rate = {self.yellow_salvage_rate}')
+        return (f'blue slavage rate = {self.blue_salvage_rate}\n green salvage rate = {self.green_salvage_rate}\n yellow salvage rate = {self.yellow_salvage_rate}')
 
 
