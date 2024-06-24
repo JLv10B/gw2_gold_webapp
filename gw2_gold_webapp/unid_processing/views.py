@@ -41,7 +41,7 @@ def GW2_recipes_PUT_GET(request, recipe_id = None):
             serialized_recipe.save()
 
     if request.method == "GET":
-        
+        pass
         
     
     
