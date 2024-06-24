@@ -20,46 +20,43 @@ class GW2_Trading_Post_Data(models.Model):
         return (f'{self.item_id} trading post data')
 
 class GW2_Items(models.Model):
-    item_id = models.IntegerField(primary_key = True, unique = True)
+    item_id = models.IntegerField(primary_key = True)
     item_name = models.CharField(max_length = 200)
     type = models.CharField(max_length = 200)
-    venter_value = models.IntegerField(null = True, blank = True)
+    vender_value = models.IntegerField(null = True, blank = True)
 
     def __str__(self) -> str:
         return self.item_name
-
+    
 class CustomUser(AbstractUser):
-    username = models.CharField(max_length = 40, unique = True)
-    password = models.CharField(max_length = 100)
-    email = models.EmailField(max_length = 100)
-    api_key = models.CharField(max_length = 100)
+    api_key = models.CharField(max_length=100, blank = True)
 
     def __str__(self):
         return self.username
     
-class _User_Storage(models.Model):
+class User_Storage(models.Model):
     user = models.ForeignKey(CustomUser, on_delete = models.CASCADE)
     time_recorded = models.DateTimeField(auto_now_add = True)
     item_id = models.IntegerField()
     item_count = models.IntegerField(null = True)
 
-class User_Shared_Inventory_Data(_User_Storage):
+class User_Shared_Inventory_Data(User_Storage):
     pass
 
-class User_Inventory_Data(_User_Storage):
+class User_Inventory_Data(User_Storage):
     pass
 
-class User_Bank_Data(_User_Storage):
+class User_Bank_Data(User_Storage):
     pass
 
-class User_Materials_Data(_User_Storage):
+class User_Materials_Data(User_Storage):
     pass
 
-class User_Wallet_Data(_User_Storage):
+class User_Wallet_Data(User_Storage):
     currency_id = models.IntegerField(primary_key = True)
 
 class User_Salvage_Records(models.Model):
-    record_number = models.IntegerField(primary_key=True, unique=True)
+    record_number = models.IntegerField(primary_key=True)
     user = models.ForeignKey(CustomUser, on_delete = models.CASCADE)
     salvaged_date = models.DateTimeField()
     salvaged_item_id = models.IntegerField()
@@ -78,9 +75,9 @@ class User_Outcome_Data(models.Model):
 class User_Salvage_Rates(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     gained_item_id = models.ForeignKey(GW2_Items, on_delete=models.CASCADE)
-    blue_salvage_rate = models.DecimalField()
-    green_salvage_rate = models.DecimalField()
-    yellow_salvage_rate = models.DecimalField()
+    blue_salvage_rate = models.DecimalField(max_digits=5, decimal_places=2)
+    green_salvage_rate = models.DecimalField(max_digits=5, decimal_places=2)
+    yellow_salvage_rate = models.DecimalField(max_digits=5, decimal_places=2)
 
     def __str__(self) -> str:
         return (f'blue slavage rate = {self.blue_salvage_rate}\n green salvage rate = {self.green_salvage_rate}\n yellow salvage rate = {self.yellow_salvage_rate}')

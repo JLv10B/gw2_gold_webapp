@@ -13,13 +13,11 @@ class GW2_Trading_Post_Data_Serializer(serializers.ModelSerializer):
         fields = ['item_id', 'buys', 'sells']
 
 class GW2_Items_Serializer(serializers.ModelSerializer):
-    item_recipe = GW2_Recipes_Serializer(read_only = True)
-    item_tp_data = GW2_Trading_Post_Data_Serializer(read_only = True)
     class Meta:
         model = GW2_Items
-        fields = ['item_id', 'item_name', 'type', 'rarity', 'vender_value', 'item_recipe', 'item_tp_data']
+        fields = ['item_id', 'item_name', 'type', 'rarity', 'vender_value']
 
 class CustomUser_Serializer(serializers.ModelSerializer):
     class Meta:
-        model = User
+        model = CustomUser
         fields = '__all__'
