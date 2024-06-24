@@ -57,11 +57,9 @@ def data_dump_view(request):
     3.) Save the file to local
     """
     
-    
     response = HttpResponse(headers={"Content-Type": "text/plain",
                                      "Content-Disposition": 'attachment; filename="test.txt"'},)
     
-        
     lines = ["This is line 1\n",
             "This is line 2\n",
             "this is line 3\n"]
@@ -72,8 +70,6 @@ def data_dump_view(request):
     
     
     
-    
-
 # Testing:
 # if __name__ == "__main__":
     # fetch_GW2_recipes()
