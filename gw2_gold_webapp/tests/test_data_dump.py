@@ -12,7 +12,9 @@ class DataDumpViewTest(TestCase):
 
     def test_data_dump_view(self):
         # Call the view using the client
-        response = self.client.get(reverse('data_dump'))
+        request = reverse('data_dump')
+        # request.
+        response = self.client.get(request)
 
         # Check the content type
         self.assertEqual(response.get('Content-Type'), 'text/plain')
