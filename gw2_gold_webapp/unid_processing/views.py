@@ -6,8 +6,12 @@ from django.db.models import Q
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
+from rest_framework import generics, viewsets
+from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
+from rest_framework.permissions import IsAuthenticated, BasePermission
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from .models import CustomUser
-from .forms import UsterCreationForm
+from . serializer import CustomUser_Serializer
 # Create your views here.
 
 def data_dump_view(request):
@@ -29,8 +33,23 @@ def data_dump_view(request):
     response.writelines(lines)
     return response
 
-def register_page(request):
-    form = UserCreationForm()
-    
-    if request.method == "POST":
-        form= UserCreationForm(request.POST)
+class CustomUser_List_ViewSet(generics.ListAPIView):
+    """
+    This view allows those with the correct permissions to view users.
+    TODO: Allow only managers to view user list
+    """
+    permission_classes = [IsAuthenticated]
+    queryset = CustomUser.objects.all()
+    serializer_class = CustomUser_Serializer
+
+
+class CustomUser_Create_ViewSet(generics.CreateAPIView):
+    """
+    This view allows users to register a new account.
+    """
+    throttle_classes = [AnonRateThrottle, UserRateThrottle]
+    queryset = CustomUser.objects.all()
+    serializer_class = CustomUser_Serializer
+
+
+
