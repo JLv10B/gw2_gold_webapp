@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, FileResponse
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
@@ -29,7 +29,7 @@ class CustomUser_List_ViewSet(generics.ListAPIView):
     serializer_class = CustomUser_Serializer
 
 @api_view(['GET'])
-def Pull_User_Raw_Data_View(request):
+def GET_User_Raw_Data_View(request):
     """
     This view performs API calls to GW2 Bank, Character inventories, Shared inventory, Materials, Wallet APIs to retrieve current items, returns dictionary {item_id:quantity}. Saves data in local files for developement purposes only. Future data storage will be in S3 or other noSQL database.
 
@@ -133,22 +133,27 @@ def Pull_User_Raw_Data_View(request):
         else:
             account_item_dict['coin'] = coins_value  
 
+        # TODO: check if new_record_number actually += 1 if there is a user_record object in the model
         try:
             new_record_number = User_Salvage_Records.objects.get(user = request.user).record_number + 1
         except:
             new_record_number = 1
-
-        # TODO: Need to check if this actually checks if the correct file exists
-        if os.path.isfile(f'{request.user}/{new_record_number}/initial_record.json'):
-            file_name = 'final_record'
+               
+        try:
+            os.mkdir(f'test_data/{request.user}/{new_record_number}')
+        except:
+            print('directory already created')
+    
+        if os.path.isfile(f'test_data/{request.user}/{new_record_number}/initial_record'):
+            file_name = 'final_record' # Wirtes/Rewrites final_record if initial_record has been created
         else:
             file_name = 'initial_record'
 
-        # TODO: Need to change where the path saves to and creates new dir as needed
-        response = HttpResponse(content_type='application/json')  
-        response['Content-Disposition'] = f'attachment; filename="{request.user}/{new_record_number}/{file_name}.json"'
+        f=open(f"test_data/{request.user}/{new_record_number}/{file_name}", 'w')
+        f.write(json.dumps(account_item_dict))
+        f.close()
 
-        response.write(json.dumps(account_item_dict))
+        response = HttpResponse(json.dumps(account_item_dict))
 
         return response
 
