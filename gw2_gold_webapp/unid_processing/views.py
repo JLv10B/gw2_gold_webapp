@@ -11,13 +11,14 @@ from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework.decorators import api_view
-from .models import CustomUser, User_Salvage_Records
+from .models import CustomUser, User_Salvage_Records, User_Outcome_Data
 from .serializer import CustomUser_Serializer
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_headers
 import requests
 import json
 import os.path
+from datetime import datetime
 # Create your views here.
 
 class CustomUser_List_ViewSet(generics.ListAPIView):
@@ -75,8 +76,6 @@ def GET_User_Raw_Data_View(request):
         user_api = request.user.api_key
         account_item_dict = {}
 
-        # TODO: Can we optimize pulling data from GW2 API to decrease runtime?
-
         char_list = requests.get(f'https://api.guildwars2.com/v2/characters/?access_token={user_api}').json()
         for char in char_list:
             char_inventory = requests.get(f'https://api.guildwars2.com/v2/characters/{char}/inventory?access_token={user_api}').json() 
@@ -118,7 +117,7 @@ def GET_User_Raw_Data_View(request):
             if item_slot != None:
                 item_id = item_slot['id']
                 item_count = item_slot['count']
-            # TODO: Find a better way to handle materials that have value = 0
+            # TODO: Is there a better way to handle materials that have value = 0?
             if item_count != 0:
                 if item_id in account_item_dict:
                     account_item_dict[item_id] += item_count
@@ -133,7 +132,6 @@ def GET_User_Raw_Data_View(request):
         else:
             account_item_dict['coin'] = coins_value  
 
-        # TODO: check if new_record_number actually += 1 if there is a user_record object in the model
         try:
             new_record_number = User_Salvage_Records.objects.get(user = request.user).record_number + 1
         except:
@@ -157,10 +155,95 @@ def GET_User_Raw_Data_View(request):
 
         return response
 
-
-def Create_User_Salvage_Record_and_Outcome_Data_View(request, initial_record, final_record = None):
+@api_view(['POST'])
+def POST_User_Salvage_Outcome_Data_View(request):
     """
-    This view creates a new User_salvage_record object and User_outcome_data object with the input data. If the final_record data is None then the User_salvage_record object and User_outcome_data objects will be created from just the initial_record data.
+    TODO: Add functionality to allow users to manual input data
+    
+    This view retrieves JSON object from /test_data/<username>/<record_number>/{Initial_recording|Final_recording}.json and creates a new user_salvage_record object and user_outcome_data object. 
 
+    req:
+    username
+    record_number
+    initial/final_recording
+
+    -Open both initial and final records and extract JSON objects.
+    -Calculate the difference for the values in final_recording and initial_recording.
+    -Create user_salvage_record object
+    -Create user_outcome_data object
+
+    user_salvage_record object:
+    -record_number
+    -user
+    -salvage_date
+    -salvaged_item_id: {85016|84731|83008}
+    -salvaged_item_count
+
+    user_outcome_data object:
+    -record_number
+    -gained_item_id
+    -gained_item_count
     """
-    pass
+
+    if request.method == "POST":
+        try:
+            new_record_number = User_Salvage_Records.objects.get(user = request.user).record_number + 1
+        except:
+            new_record_number = 1
+
+        initial_record = open(f'C:/Users/james/Documents/Coding/gw2_gold_webapp/gw2_gold_webapp/test_data/{request.user}/{new_record_number}/initial_record', 'r')
+        initial_record_json = initial_record.read()
+        initial_record_dict = json.loads(initial_record_json)
+
+        final_record = open(f'C:/Users/james/Documents/Coding/gw2_gold_webapp/gw2_gold_webapp/test_data/{request.user}/{new_record_number}/final_record', 'r')
+        final_record_json = final_record.read()
+        final_record_dict = json.loads(final_record_json)
+
+        if '85016' in initial_record_dict:
+            if '85016' in final_record_dict:
+                initial_record_dict['85016'] = abs(initial_record_dict['85016'] - final_record_dict['85016'])
+                del final_record_dict['85016']
+            salvage_item_count = initial_record_dict.pop('85016')
+            salvage_item_id = '85016'  
+
+        if '84731' in initial_record_dict:
+            if '84731' in final_record_dict:
+                initial_record_dict['84731'] = abs(initial_record_dict['84731'] - final_record_dict['84731'])
+                del final_record_dict['84731']
+            if initial_record_dict['84731'] > salvage_item_count:
+                salvage_item_count =  initial_record_dict.pop('84731')
+                salvage_item_id = '84731'
+            else:
+                del initial_record_dict['84731']
+        
+        if '83008' in initial_record_dict:
+            if '83008' in final_record_dict:
+                initial_record_dict['83008'] = abs(initial_record_dict['83008'] - final_record_dict['83008'])
+                del final_record_dict['83008']
+            if initial_record_dict['83008'] > salvage_item_count:
+                salvage_item_count = initial_record_dict.pop('83008')
+                salvage_item_id = '83008'
+            else:
+                del initial_record_dict['83008']
+
+        User_Salvage_Records.objects.create(
+            record_number = new_record_number,
+            user = CustomUser.objects.get(username = request.user),
+            salvaged_date = datetime.now(),
+            salvaged_item_id = salvage_item_id,
+            salvaged_item_count = salvage_item_count,
+        )
+
+        for gained_item in final_record_dict:
+            if gained_item in initial_record_dict:
+                final_record_dict[gained_item] = abs(final_record_dict[gained_item] - initial_record_dict[gained_item])
+            if final_record_dict[gained_item] == 0:
+                pass
+            else:
+                User_Outcome_Data.objects.create(
+                    record_number = User_Salvage_Records.objects.get(record_number = new_record_number),
+                    gained_item_id = gained_item,
+                    gained_item_count = final_record_dict[gained_item],
+                )
+                
+        return HttpResponse({'Salvage record and outcome data created'})

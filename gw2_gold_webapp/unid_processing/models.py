@@ -60,14 +60,15 @@ class User_Salvage_Records(models.Model):
     user = models.ForeignKey(CustomUser, on_delete = models.CASCADE)
     salvaged_date = models.DateTimeField()
     salvaged_item_id = models.IntegerField()
+    salvaged_item_count = models.IntegerField(default=0)
 
     def __str__(self) -> str:
         return (f'record number = {self.record_number}, salvaged item = {self.salvaged_item_id}')
 
 class User_Outcome_Data(models.Model):
     record_number = models.ForeignKey(User_Salvage_Records, on_delete = models.CASCADE)
-    gained_item_id = models.ForeignKey(GW2_Items, on_delete= models.CASCADE)
-    gained_item_count = models.IntegerField()
+    gained_item_id = models.CharField(max_length=100, blank = True)
+    gained_item_count = models.IntegerField(default=0)
 
     def __str__(self) -> str:
         return (f'item = {self.gained_item_id}, count = {self.gained_item_count}')
