@@ -8,7 +8,7 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework.decorators import api_view
 from .models import CustomUser, User_Salvage_Records, User_Outcome_Data
-from .serializer import CustomUser_Serializer, User_Salvage_Recod_Serializer, User_Outcome_Data
+from .serializer import CustomUser_Serializer, User_Salvage_Record_Serializer, User_Outcome_data_Serializer
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_headers
 import requests
@@ -290,17 +290,19 @@ def Manual_User_Salvage_Outcome_Data_View(request):
 
 class User_Salvage_Record_ViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
-    serializer_class = User_Salvage_Recod_Serializer
+    serializer_class = User_Salvage_Record_Serializer
 
     def get_queryset(self):
         user = self.request.user
         queryset = User_Salvage_Records.objects.filter(user=user)
         return queryset
-    
-    def put(self, request, pk):
-        """
-        This function allows for user to modify the user_salvage_record object's salvaged_item_id and salvaged_item_count.
-        """
-        
-        pass
 
+class User_Outcome_Data_ViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
+    serializer_class = User_Outcome_data_Serializer
+
+    def get_queryset(self):
+        user = self.request.user.id
+        record_number = self.request.data['record_number']
+        queryset = User_Outcome_Data.objects.filter(record_number__user = user).filter(record_number = record_number)
+        return queryset

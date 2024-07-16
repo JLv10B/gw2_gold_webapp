@@ -8,3 +8,5 @@ admin.site.register(User_Salvage_Records)
 admin.site.register(User_Outcome_Data)
 admin.site.register(User_Salvage_Rates)
 
+class User_Salvage_RecordsAdmin(admin.ModelAdmin):
+    search_fields = ('user')

@@ -26,6 +26,9 @@ class User_Outcome_Data(models.Model):
     def __str__(self) -> str:
         return (f'item = {self.gained_item_id}, count = {self.gained_item_count}')
     
+    class Meta:
+        unique_together = ('record_number', 'gained_item_id')
+    
 class User_Salvage_Rates(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     gained_item_id = models.CharField(max_length=100, blank = True)
