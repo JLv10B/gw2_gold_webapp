@@ -9,7 +9,7 @@ class CustomUser(AbstractUser):
         return self.username
 
 class User_Salvage_Records(models.Model):
-    record_number = models.IntegerField()
+    record_number = models.IntegerField(primary_key=True)
     user = models.ForeignKey(CustomUser, on_delete = models.CASCADE)
     salvaged_date = models.DateTimeField()
     salvaged_item_id = models.IntegerField(default=0)

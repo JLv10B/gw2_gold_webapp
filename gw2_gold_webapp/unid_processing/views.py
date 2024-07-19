@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, FileResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
+from django.db.models import Max
 from rest_framework import generics, viewsets
 from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
@@ -129,7 +130,7 @@ def GET_User_Raw_Data_View(request):
             account_item_dict['coin'] = coins_value  
 
         try:
-            new_record_number = User_Salvage_Records.objects.get(user = request.user).record_number + 1
+            new_record_number = User_Salvage_Records.objects.filter(user = request.user).aggregate(largest_record =Max('record_number'))['largest_record'] + 1
         except:
             new_record_number = 1
                
@@ -181,7 +182,7 @@ def POST_User_Salvage_Outcome_Data_View(request):
 
     if request.method == "POST":
         try:
-            new_record_number = User_Salvage_Records.objects.get(user = request.user).record_number + 1
+            new_record_number = User_Salvage_Records.objects.filter(user = request.user).aggregate(largest_record =Max('record_number'))['largest_record'] + 1
         except:
             new_record_number = 1
 
@@ -252,7 +253,7 @@ def Manual_User_Salvage_Outcome_Data_View(request):
     """
     if request.method == "POST":
         try:
-            new_record_number = User_Salvage_Records.objects.get(user = request.user).record_number + 1
+            new_record_number = User_Salvage_Records.objects.filter(user = request.user).aggregate(largest_record =Max('record_number'))['largest_record'] + 1
         except:
             new_record_number = 1
 
@@ -306,3 +307,10 @@ class User_Outcome_Data_ViewSet(viewsets.ModelViewSet):
         record_number = self.request.data['record_number']
         queryset = User_Outcome_Data.objects.filter(record_number__user = user).filter(record_number = record_number)
         return queryset
+
+@api_view(['POST'])
+def POST_User_Salvage_Rate_View(request):
+    """
+    This function updates user_salvage_rates for the user. This function should be used after a new record is created or after a record is deleted.+
+    
+    """
