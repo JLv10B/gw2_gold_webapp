@@ -9,7 +9,10 @@ urlpatterns = [
     path('create-manual-record', views.Manual_User_Salvage_Outcome_Data_View, name="create-manual-record"),
     path('salvage-record/list', views.User_Salvage_Record_ViewSet.as_view({'get':'list'})),
     path('salvage-record/update/<int:pk>', views.User_Salvage_Record_ViewSet.as_view({'patch':'partial_update'})), 
-    path('salvage-record/delete/<int:pk>', views.User_Salvage_Record_ViewSet.as_view({'delete':'destroy'})), #TODO: test implementation
+    path('salvage-record/delete/<int:pk>', views.User_Salvage_Record_ViewSet.as_view({'delete':'destroy'})),
     path('outcome-data/list', views.User_Outcome_Data_ViewSet.as_view({'get':'list'})),
     path('outcome-data/update/<int:pk>', views.User_Outcome_Data_ViewSet.as_view({'patch':'partial_update'})),
+    path('salvage-rate', views.User_Salvage_Rate_ViewSet.as_view({'get':'list'}), name="salvage-rate"),
+    path('salvage-rate/delete/<int:pk>', views.User_Salvage_Rate_ViewSet.as_view({'delete':'destroy'}), name="salvage-rate-delete"),
+    path('salvage-rate/update', views.POST_User_Salvage_Rate_View, name="salvage-rate-update"),
 ]

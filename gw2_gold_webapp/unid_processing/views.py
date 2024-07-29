@@ -8,8 +8,8 @@ from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework.decorators import api_view
-from .models import CustomUser, User_Salvage_Records, User_Outcome_Data
-from .serializer import CustomUser_Serializer, User_Salvage_Record_Serializer, User_Outcome_data_Serializer
+from .models import CustomUser, User_Salvage_Records, User_Outcome_Data, User_Salvage_Rates
+from .serializer import CustomUser_Serializer, User_Salvage_Record_Serializer, User_Outcome_data_Serializer, User_Salvage_Rate_Serializer
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_headers
 import requests
@@ -75,7 +75,7 @@ def GET_User_Raw_Data_View(request):
 
         char_list = requests.get(f'https://api.guildwars2.com/v2/characters/?access_token={user_api}').json()
         for char in char_list:
-            char_inventory = requests.get(f'https://api.guildwars2.com/v2/characters/{char}/inventory?access_token={user_api}').json() 
+            char_inventory = requests.get(f'https://api.guildwars2.com/v2/characters/{char}/inventory?access_token={user_api}').json()
             bag_list = char_inventory['bags']
             for bag_slot in bag_list:
                 if bag_slot != None:
@@ -129,22 +129,23 @@ def GET_User_Raw_Data_View(request):
         else:
             account_item_dict['coin'] = coins_value  
 
-        try:
+        if User_Salvage_Records.objects.filter(user = request.user).exists():
             new_record_number = User_Salvage_Records.objects.filter(user = request.user).aggregate(largest_record =Max('record_number'))['largest_record'] + 1
-        except:
+        else:
             new_record_number = 1
-               
-        try:
-            os.mkdir(f'test_data/{request.user}/{new_record_number}')
-        except:
-            print('directory already created')
+
+        path = f'sample_data/{request.user}/{new_record_number}'
+        if os.path.exists(path):
+            pass
+        else:
+            os.mkdir(f'sample_data/{request.user}/{new_record_number}')
     
-        if os.path.isfile(f'test_data/{request.user}/{new_record_number}/initial_record'):
-            file_name = 'final_record' # Wirtes/Rewrites final_record if initial_record has been created
+        if os.path.isfile(f'sample_data/{request.user}/{new_record_number}/initial_record'):
+            file_name = 'final_record' # Writes/Rewrites final_record if initial_record has been created
         else:
             file_name = 'initial_record'
 
-        f=open(f"test_data/{request.user}/{new_record_number}/{file_name}", 'w')
+        f=open(f"sample_data/{request.user}/{new_record_number}/{file_name}", 'w')
         f.write(json.dumps(account_item_dict))
         f.close()
 
@@ -155,7 +156,7 @@ def GET_User_Raw_Data_View(request):
 @api_view(['POST'])
 def POST_User_Salvage_Outcome_Data_View(request):
     """    
-    This view retrieves JSON object from /test_data/<username>/<record_number>/{Initial_recording|Final_recording}.json and creates a new user_salvage_record object and user_outcome_data object. The record number is automatically determined from the User_salvage_record model. The salvaged_item_id is determined by which unid had the largest difference in count. 
+    This view retrieves JSON object from /sample_data/<username>/<record_number>/{Initial_recording|Final_recording}.json and creates a new user_salvage_record object and user_outcome_data object. The record number is automatically determined from the User_salvage_record model. The salvaged_item_id is determined by which unid had the largest difference in count. 
 
     req:
     username
@@ -181,16 +182,17 @@ def POST_User_Salvage_Outcome_Data_View(request):
     """
 
     if request.method == "POST":
-        try:
+
+        if User_Salvage_Records.objects.filter(user = request.user).exists():
             new_record_number = User_Salvage_Records.objects.filter(user = request.user).aggregate(largest_record =Max('record_number'))['largest_record'] + 1
-        except:
+        else:
             new_record_number = 1
 
-        initial_record = open(f'C:/Users/james/Documents/Coding/gw2_gold_webapp/gw2_gold_webapp/test_data/{request.user}/{new_record_number}/initial_record', 'r')
+        initial_record = open(f'C:/Users/james/Documents/Coding/gw2_gold_webapp/gw2_gold_webapp/sample_data/{request.user}/{new_record_number}/initial_record', 'r')
         initial_record_json = initial_record.read()
         initial_record_dict = json.loads(initial_record_json)
 
-        final_record = open(f'C:/Users/james/Documents/Coding/gw2_gold_webapp/gw2_gold_webapp/test_data/{request.user}/{new_record_number}/final_record', 'r')
+        final_record = open(f'C:/Users/james/Documents/Coding/gw2_gold_webapp/gw2_gold_webapp/sample_data/{request.user}/{new_record_number}/final_record', 'r')
         final_record_json = final_record.read()
         final_record_dict = json.loads(final_record_json)
 
@@ -252,9 +254,10 @@ def Manual_User_Salvage_Outcome_Data_View(request):
     
     """
     if request.method == "POST":
-        try:
+        
+        if User_Salvage_Records.objects.filter(user = request.user).exists():
             new_record_number = User_Salvage_Records.objects.filter(user = request.user).aggregate(largest_record =Max('record_number'))['largest_record'] + 1
-        except:
+        else:
             new_record_number = 1
 
         data = request.data['items']
@@ -308,9 +311,107 @@ class User_Outcome_Data_ViewSet(viewsets.ModelViewSet):
         queryset = User_Outcome_Data.objects.filter(record_number__user = user).filter(record_number = record_number)
         return queryset
 
+class User_Salvage_Rate_ViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
+    serializer_class = User_Salvage_Rate_Serializer
+
+    def get_queryset(self):
+        user = self.request.user
+        queryset = User_Salvage_Rates.objects.filter(user=user)
+        return queryset
+    
 @api_view(['POST'])
 def POST_User_Salvage_Rate_View(request):
     """
-    This function updates user_salvage_rates for the user. This function should be used after a new record is created or after a record is deleted.+
+    This function updates user_salvage_rates for the user. This function should be used after a new record is created or after a record is deleted.
+
+    salvage_record_dict:
+    {
+      85016:[1,3,4,6,7,98],
+      84731:[...],
+      83008:[...]
+    }
     
+    outcome_data_dict:
+    {
+      1234:{
+              85016:351681,
+              84731:351849,
+              83008:321651
+            },
+      3245:{
+              85016:65816,
+              84731:65149,
+              83008:48315
+            },
+      ...
+    }
+
     """
+    if request.method == "POST":
+
+        salvage_record_dict = {85016:[], 84731:[], 83008:[]}
+        blue_unid_count = 0
+        green_unid_count = 0
+        yellow_unid_count = 0
+
+        if User_Salvage_Records.objects.filter(user = request.user).exists():
+            queryset = User_Salvage_Records.objects.filter(user = request.user)
+            for record in queryset:
+                if record.salvaged_item_id == 85016:
+                    blue_unid_count += record.salvaged_item_count
+                elif record.salvaged_item_id == 84731:
+                    green_unid_count += record.salvaged_item_count
+                else:
+                    yellow_unid_count += record.salvaged_item_count
+            salvage_record_dict[record.salvaged_item_id].append(record.record_number)
+
+        else:
+            print(f'No records for user:{request.user} found')
+
+        outcome_data_dict = {}
+        user_record_list = []
+
+        for unid, record_list in salvage_record_dict.items():
+            if len(record_list) != 0:
+                user_record_list.extend(record_list)
+                for record_number in record_list:
+                    queryset = User_Outcome_Data.objects.filter(record_number = record_number)
+                    for data in queryset:
+                        if data.gained_item_id in outcome_data_dict:
+                            outcome_data_dict[data.gained_item_id][unid] += data.gained_item_count
+                        else:
+                            outcome_data_dict[data.gained_item_id] = {85016:0, 84731:0, 83008:0}
+                            outcome_data_dict[data.gained_item_id][unid] = data.gained_item_count
+
+        for gained_item_id, count_dict in outcome_data_dict.items():     
+            try:
+               blue_rate = count_dict[85016]/blue_unid_count
+            except:
+                blue_rate = 0 
+            try:
+               green_rate = count_dict[84731]/blue_unid_count
+            except:
+                green_rate = 0 
+            try:
+               yellow_rate = count_dict[83008]/blue_unid_count
+            except:
+                yellow_rate = 0 
+            
+            obj, created = User_Salvage_Rates.objects.update_or_create(
+                    user= request.user,
+                    gained_item_id= gained_item_id,
+                    defaults= {'blue_salvage_rate': blue_rate,
+                               'green_salvage_rate': green_rate, 
+                               'yellow_salvage_rate': yellow_rate,},
+                    )
+        
+        outcome_data_queryset = User_Outcome_Data.objects.filter(record_number__in = user_record_list).values('gained_item_id')
+        salvage_rate_queryset = User_Salvage_Rates.objects.filter(user = request.user).values('gained_item_id')
+        queryset_diff = salvage_rate_queryset.difference(outcome_data_queryset) #TODO: Figure out how to delete the difference between user_outcome_data objects and User_salvage_rate objects
+        if len(queryset_diff) != 0:
+            for obj in queryset_diff:
+                User_Salvage_Rates.objects.filter(user = request.user).get(gained_item_id = obj['gained_item_id']).delete()
+
+
+        return HttpResponse('Salvage rates updated')

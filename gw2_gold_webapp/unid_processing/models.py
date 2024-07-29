@@ -36,6 +36,9 @@ class User_Salvage_Rates(models.Model):
     green_salvage_rate = models.DecimalField(max_digits=5, decimal_places=2)
     yellow_salvage_rate = models.DecimalField(max_digits=5, decimal_places=2)
 
+    class Meta:
+        unique_together = ('user', 'gained_item_id')
+
     def __str__(self) -> str:
         return (f'blue slavage rate = {self.blue_salvage_rate}\n green salvage rate = {self.green_salvage_rate}\n yellow salvage rate = {self.yellow_salvage_rate}')
 

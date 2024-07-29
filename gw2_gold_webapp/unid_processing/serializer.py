@@ -23,3 +23,8 @@ class User_Outcome_data_Serializer(serializers.ModelSerializer):
     class Meta:
         model = User_Outcome_Data
         fields = '__all__'
+
+class User_Salvage_Rate_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = User_Salvage_Rates
+        fields = '__all__'
