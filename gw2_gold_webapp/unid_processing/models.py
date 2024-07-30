@@ -9,14 +9,10 @@ class CustomUser(AbstractUser):
         return self.username
 
 class User_Salvage_Records(models.Model):
-    record_number = models.IntegerField(primary_key=True)
     user = models.ForeignKey(CustomUser, on_delete = models.CASCADE)
     salvaged_date = models.DateTimeField()
     salvaged_item_id = models.IntegerField(default=0)
     salvaged_item_count = models.IntegerField(default=0)
-
-    def __str__(self) -> str:
-        return (f'record number = {self.record_number}, salvaged item = {self.salvaged_item_id}')
 
 class User_Outcome_Data(models.Model):
     record_number = models.ForeignKey(User_Salvage_Records, on_delete = models.CASCADE)
@@ -38,8 +34,5 @@ class User_Salvage_Rates(models.Model):
 
     class Meta:
         unique_together = ('user', 'gained_item_id')
-
-    def __str__(self) -> str:
-        return (f'blue slavage rate = {self.blue_salvage_rate}\n green salvage rate = {self.green_salvage_rate}\n yellow salvage rate = {self.yellow_salvage_rate}')
 
 

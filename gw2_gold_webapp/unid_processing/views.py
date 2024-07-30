@@ -128,24 +128,25 @@ def GET_User_Raw_Data_View(request):
             account_item_dict['coin'] += coins_value
         else:
             account_item_dict['coin'] = coins_value  
+        
+        new_record, created = User_Salvage_Records.objects.get_or_create(
+            user = CustomUser.objects.get(username = request.user),
+            salvaged_item_id = 0,
+            defaults= {'salvaged_date': datetime.now(),}
+        )
 
-        if User_Salvage_Records.objects.filter(user = request.user).exists():
-            new_record_number = User_Salvage_Records.objects.filter(user = request.user).aggregate(largest_record =Max('record_number'))['largest_record'] + 1
-        else:
-            new_record_number = 1
-
-        path = f'sample_data/{request.user}/{new_record_number}'
+        path = f'sample_data/{request.user}/{new_record.id}'
         if os.path.exists(path):
             pass
         else:
-            os.mkdir(f'sample_data/{request.user}/{new_record_number}')
+            os.mkdir(f'sample_data/{request.user}/{new_record.id}')
     
-        if os.path.isfile(f'sample_data/{request.user}/{new_record_number}/initial_record'):
+        if os.path.isfile(f'sample_data/{request.user}/{new_record.id}/initial_record'):
             file_name = 'final_record' # Writes/Rewrites final_record if initial_record has been created
         else:
             file_name = 'initial_record'
 
-        f=open(f"sample_data/{request.user}/{new_record_number}/{file_name}", 'w')
+        f=open(f"sample_data/{request.user}/{new_record.id}/{file_name}", 'w')
         f.write(json.dumps(account_item_dict))
         f.close()
 
@@ -183,10 +184,7 @@ def POST_User_Salvage_Outcome_Data_View(request):
 
     if request.method == "POST":
 
-        if User_Salvage_Records.objects.filter(user = request.user).exists():
-            new_record_number = User_Salvage_Records.objects.filter(user = request.user).aggregate(largest_record =Max('record_number'))['largest_record'] + 1
-        else:
-            new_record_number = 1
+        new_record_number = User_Salvage_Records.objects.filter(user = request.user).aggregate(largest_record =Max('id'))['largest_record']
 
         initial_record = open(f'C:/Users/james/Documents/Coding/gw2_gold_webapp/gw2_gold_webapp/sample_data/{request.user}/{new_record_number}/initial_record', 'r')
         initial_record_json = initial_record.read()
@@ -225,11 +223,8 @@ def POST_User_Salvage_Outcome_Data_View(request):
             else:
                 del initial_record_dict['83008']
 
-        User_Salvage_Records.objects.create(
-            record_number = new_record_number,
-            user = CustomUser.objects.get(username = request.user),
-            salvaged_date = datetime.now(),
-            salvaged_item_id = salvage_item_id,
+        User_Salvage_Records.objects.filter(pk = new_record_number).update(
+            salvaged_item_id = salvage_item_id, 
             salvaged_item_count = salvage_item_count,
         )
 
@@ -240,7 +235,7 @@ def POST_User_Salvage_Outcome_Data_View(request):
                 pass
             else:
                 User_Outcome_Data.objects.create(
-                    record_number = User_Salvage_Records.objects.get(record_number = new_record_number),
+                    record_number = User_Salvage_Records.objects.get(pk = new_record_number),
                     gained_item_id = gained_item,
                     gained_item_count = final_record_dict[gained_item],
                 )
@@ -254,12 +249,7 @@ def Manual_User_Salvage_Outcome_Data_View(request):
     
     """
     if request.method == "POST":
-        
-        if User_Salvage_Records.objects.filter(user = request.user).exists():
-            new_record_number = User_Salvage_Records.objects.filter(user = request.user).aggregate(largest_record =Max('record_number'))['largest_record'] + 1
-        else:
-            new_record_number = 1
-
+    
         data = request.data['items']
         manual_record = json.loads(data)
         salvage_item_count = 0
@@ -275,8 +265,7 @@ def Manual_User_Salvage_Outcome_Data_View(request):
             salvage_item_count = manual_record.pop('83008')
             salvage_item_id = '83008'
 
-        User_Salvage_Records.objects.create(
-            record_number = new_record_number,
+        new_record = User_Salvage_Records.objects.create(
             user = CustomUser.objects.get(username = request.user),
             salvaged_date = datetime.now(),
             salvaged_item_id = salvage_item_id,
@@ -285,7 +274,7 @@ def Manual_User_Salvage_Outcome_Data_View(request):
 
         for gained_item in manual_record:
             User_Outcome_Data.objects.create(
-                record_number = User_Salvage_Records.objects.get(record_number = new_record_number),
+                record_number = User_Salvage_Records.objects.get(pk = new_record.id),
                 gained_item_id = gained_item,
                 gained_item_count = manual_record[gained_item],
             )
@@ -364,7 +353,7 @@ def POST_User_Salvage_Rate_View(request):
                     green_unid_count += record.salvaged_item_count
                 else:
                     yellow_unid_count += record.salvaged_item_count
-            salvage_record_dict[record.salvaged_item_id].append(record.record_number)
+            salvage_record_dict[record.salvaged_item_id].append(record.id)
 
         else:
             print(f'No records for user:{request.user} found')
@@ -408,10 +397,9 @@ def POST_User_Salvage_Rate_View(request):
         
         outcome_data_queryset = User_Outcome_Data.objects.filter(record_number__in = user_record_list).values('gained_item_id')
         salvage_rate_queryset = User_Salvage_Rates.objects.filter(user = request.user).values('gained_item_id')
-        queryset_diff = salvage_rate_queryset.difference(outcome_data_queryset) #TODO: Figure out how to delete the difference between user_outcome_data objects and User_salvage_rate objects
+        queryset_diff = salvage_rate_queryset.difference(outcome_data_queryset)
         if len(queryset_diff) != 0:
             for obj in queryset_diff:
                 User_Salvage_Rates.objects.filter(user = request.user).get(gained_item_id = obj['gained_item_id']).delete()
-
 
         return HttpResponse('Salvage rates updated')
