@@ -403,3 +403,67 @@ def POST_User_Salvage_Rate_View(request):
                 User_Salvage_Rates.objects.filter(user = request.user).get(gained_item_id = obj['gained_item_id']).delete()
 
         return HttpResponse('Salvage rates updated')
+    
+@api_view(['GET'])
+def GET_Actualized_Profit_View(request):
+    """
+    This function allows the user to calculate the profit from buying unid gear, opening, and salvaging. This function will return 1.) the total cost processing, 2.) price of materials if bought from the TP, 3.) revenue earned if all materials sold on the TP minus fees
+
+    unid_tp_info:
+    {
+      "id": 19684,
+      "whitelisted": false,
+      "buys": {
+                "quantity": 145975,
+                "unit_price": 7018
+               },
+      "sells":{
+                 "quantity": 126,
+                 "unit_price": 7019
+               }
+    }
+
+    """
+    if request.data['record_number'] and request.data['record_number'] != '0':
+        salvage_record_number = request.data['record_number']   
+    else:
+        salvage_record_number = User_Salvage_Records.objects.filter(user = request.user).aggregate(largest_record =Max('id'))['largest_record']
+
+    print(f'salvage_record_number: {salvage_record_number}')
+
+    salvage_record = User_Salvage_Records.objects.get(pk = salvage_record_number)
+    unid_id = salvage_record.salvaged_item_id
+    unid_count = salvage_record.salvaged_item_count
+
+    if request.data['unid_price']:
+        unid_price = int(request.data['unid_price'])
+    else:
+        unid_tp_info = requests.get(f'https://api.guildwars2.com/v2/commerce/prices/{unid_id}').json()
+        unid_price = unid_tp_info['buys']['unit_price']
+
+    if User_Outcome_Data.objects.filter(record_number = salvage_record_number).filter(gained_item_id = 'coin').exists():
+        salvage_cost = User_Outcome_Data.objects.filter(record_number = salvage_record_number).get(gained_item_id = 'coin').gained_item_count
+    else:
+        salvage_cost = 0
+
+    gross_revenue_no_tax = 0
+    gained_items = User_Outcome_Data.objects.filter(record_number = salvage_record_number)
+    for item in gained_items:
+        if item.gained_item_id == 'coin':
+            continue
+        print(item.gained_item_id)
+        tp_info = requests.get(f'https://api.guildwars2.com/v2/commerce/prices/{item.gained_item_id}').json()
+        print(tp_info)
+        item_sell_price = tp_info['sells']['unit_price']
+        gross_revenue_no_tax += item.gained_item_count * item_sell_price
+
+    net_revenue = (gross_revenue_no_tax * 0.85) - (unid_count * unid_price + salvage_cost)
+    if net_revenue > 0:
+        return HttpResponse(f'{net_revenue} copper profit was made')
+    else:
+        return HttpResponse(f'{net_revenue} copper was lost')
+
+
+
+
+

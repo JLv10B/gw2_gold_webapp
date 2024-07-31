@@ -15,4 +15,5 @@ urlpatterns = [
     path('salvage-rate', views.User_Salvage_Rate_ViewSet.as_view({'get':'list'}), name="salvage-rate"),
     path('salvage-rate/delete/<int:pk>', views.User_Salvage_Rate_ViewSet.as_view({'delete':'destroy'}), name="salvage-rate-delete"),
     path('salvage-rate/update', views.POST_User_Salvage_Rate_View, name="salvage-rate-update"),
+    path('actualized-profit', views.GET_Actualized_Profit_View, name="actualized-profit"),
 ]
