@@ -353,13 +353,14 @@ def POST_User_Salvage_Rate_View(request):
                     green_unid_count += record.salvaged_item_count
                 else:
                     yellow_unid_count += record.salvaged_item_count
-            salvage_record_dict[record.salvaged_item_id].append(record.id)
-
+                salvage_record_dict[record.salvaged_item_id].append(record.id)
         else:
             print(f'No records for user:{request.user} found')
 
         outcome_data_dict = {}
         user_record_list = []
+
+        #TODO: Fix code so we don't input coin into salvage rates
 
         for unid, record_list in salvage_record_dict.items():
             if len(record_list) != 0:
@@ -373,7 +374,10 @@ def POST_User_Salvage_Rate_View(request):
                             outcome_data_dict[data.gained_item_id] = {85016:0, 84731:0, 83008:0}
                             outcome_data_dict[data.gained_item_id][unid] = data.gained_item_count
 
-        for gained_item_id, count_dict in outcome_data_dict.items():     
+        if 'coin' in outcome_data_dict.keys():
+            del outcome_data_dict['coin']
+
+        for gained_item_id, count_dict in outcome_data_dict.items():
             try:
                blue_rate = count_dict[85016]/blue_unid_count
             except:
@@ -388,11 +392,11 @@ def POST_User_Salvage_Rate_View(request):
                 yellow_rate = 0 
             
             obj, created = User_Salvage_Rates.objects.update_or_create(
-                    user= request.user,
-                    gained_item_id= gained_item_id,
-                    defaults= {'blue_salvage_rate': blue_rate,
-                               'green_salvage_rate': green_rate, 
-                               'yellow_salvage_rate': yellow_rate,},
+                user= request.user,
+                gained_item_id= gained_item_id,
+                defaults= {'blue_salvage_rate': blue_rate,
+                           'green_salvage_rate': green_rate, 
+                           'yellow_salvage_rate': yellow_rate,},
                     )
         
         outcome_data_queryset = User_Outcome_Data.objects.filter(record_number__in = user_record_list).values('gained_item_id')
@@ -424,44 +428,41 @@ def GET_Actualized_Profit_View(request):
     }
 
     """
-    if request.data['record_number'] and request.data['record_number'] != '0':
-        salvage_record_number = request.data['record_number']   
-    else:
-        salvage_record_number = User_Salvage_Records.objects.filter(user = request.user).aggregate(largest_record =Max('id'))['largest_record']
+    if request.method == "GET":
+        if request.data['record_number'] and request.data['record_number'] != '0':
+            salvage_record_number = request.data['record_number']   
+        else:
+            salvage_record_number = User_Salvage_Records.objects.filter(user = request.user).aggregate(largest_record =Max('id'))['largest_record']
 
-    print(f'salvage_record_number: {salvage_record_number}')
+        salvage_record = User_Salvage_Records.objects.get(pk = salvage_record_number)
+        unid_id = salvage_record.salvaged_item_id
+        unid_count = salvage_record.salvaged_item_count
 
-    salvage_record = User_Salvage_Records.objects.get(pk = salvage_record_number)
-    unid_id = salvage_record.salvaged_item_id
-    unid_count = salvage_record.salvaged_item_count
+        if request.data['unid_price']:
+            unid_price = int(request.data['unid_price'])
+        else:
+            unid_tp_info = requests.get(f'https://api.guildwars2.com/v2/commerce/prices/{unid_id}').json()
+            unid_price = unid_tp_info['buys']['unit_price']
 
-    if request.data['unid_price']:
-        unid_price = int(request.data['unid_price'])
-    else:
-        unid_tp_info = requests.get(f'https://api.guildwars2.com/v2/commerce/prices/{unid_id}').json()
-        unid_price = unid_tp_info['buys']['unit_price']
+        if User_Outcome_Data.objects.filter(record_number = salvage_record_number).filter(gained_item_id = 'coin').exists():
+            salvage_cost = User_Outcome_Data.objects.filter(record_number = salvage_record_number).get(gained_item_id = 'coin').gained_item_count
+        else:
+            salvage_cost = 0
 
-    if User_Outcome_Data.objects.filter(record_number = salvage_record_number).filter(gained_item_id = 'coin').exists():
-        salvage_cost = User_Outcome_Data.objects.filter(record_number = salvage_record_number).get(gained_item_id = 'coin').gained_item_count
-    else:
-        salvage_cost = 0
+        gross_revenue_no_tax = 0
+        gained_items = User_Outcome_Data.objects.filter(record_number = salvage_record_number)
+        for item in gained_items:
+            if item.gained_item_id == 'coin':
+                continue
+            tp_info = requests.get(f'https://api.guildwars2.com/v2/commerce/prices/{item.gained_item_id}').json()
+            item_sell_price = tp_info['sells']['unit_price']
+            gross_revenue_no_tax += item.gained_item_count * item_sell_price
 
-    gross_revenue_no_tax = 0
-    gained_items = User_Outcome_Data.objects.filter(record_number = salvage_record_number)
-    for item in gained_items:
-        if item.gained_item_id == 'coin':
-            continue
-        print(item.gained_item_id)
-        tp_info = requests.get(f'https://api.guildwars2.com/v2/commerce/prices/{item.gained_item_id}').json()
-        print(tp_info)
-        item_sell_price = tp_info['sells']['unit_price']
-        gross_revenue_no_tax += item.gained_item_count * item_sell_price
-
-    net_revenue = (gross_revenue_no_tax * 0.85) - (unid_count * unid_price + salvage_cost)
-    if net_revenue > 0:
-        return HttpResponse(f'{net_revenue} copper profit was made')
-    else:
-        return HttpResponse(f'{net_revenue} copper was lost')
+        net_revenue = (gross_revenue_no_tax * 0.85) - (unid_count * unid_price + salvage_cost)
+        if net_revenue > 0:
+            return HttpResponse(f'{net_revenue} copper profit was made')
+        else:
+            return HttpResponse(f'{net_revenue} copper was lost')
 
 
 
