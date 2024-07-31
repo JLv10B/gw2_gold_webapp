@@ -360,8 +360,6 @@ def POST_User_Salvage_Rate_View(request):
         outcome_data_dict = {}
         user_record_list = []
 
-        #TODO: Fix code so we don't input coin into salvage rates
-
         for unid, record_list in salvage_record_dict.items():
             if len(record_list) != 0:
                 user_record_list.extend(record_list)
@@ -450,19 +448,24 @@ def GET_Actualized_Profit_View(request):
             salvage_cost = 0
 
         gross_revenue_no_tax = 0
+        raw_item_price = 0
         gained_items = User_Outcome_Data.objects.filter(record_number = salvage_record_number)
         for item in gained_items:
             if item.gained_item_id == 'coin':
                 continue
             tp_info = requests.get(f'https://api.guildwars2.com/v2/commerce/prices/{item.gained_item_id}').json()
+            item_buy_price = tp_info['buys']['unit_price']
             item_sell_price = tp_info['sells']['unit_price']
             gross_revenue_no_tax += item.gained_item_count * item_sell_price
+            raw_item_price += item.gained_item_count * item_buy_price
 
-        net_revenue = (gross_revenue_no_tax * 0.85) - (unid_count * unid_price + salvage_cost)
-        if net_revenue > 0:
-            return HttpResponse(f'{net_revenue} copper profit was made')
-        else:
-            return HttpResponse(f'{net_revenue} copper was lost')
+        initial_investment = (unid_count * unid_price + salvage_cost)
+        net_revenue = (gross_revenue_no_tax * 0.85) - initial_investment
+        item_discount = raw_item_price - initial_investment
+        
+        output = f'Cost of initial investment: {initial_investment} copper\nPrice if raw materials were bought from TP: {raw_item_price} copper\nNet revenue:{net_revenue} copper\nDiscount on raw items: {item_discount} copper'
+
+        return HttpResponse(output, content_type = "text/plain")
 
 
 
