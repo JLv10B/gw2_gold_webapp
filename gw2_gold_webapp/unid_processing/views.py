@@ -409,7 +409,7 @@ def POST_User_Salvage_Rate_View(request):
 @api_view(['GET'])
 def GET_Actualized_Profit_View(request):
     """
-    This function allows the user to calculate the profit from buying unid gear, opening, and salvaging. This function will return 1.) the total cost processing, 2.) price of materials if bought from the TP, 3.) revenue earned if all materials sold on the TP minus fees
+    This function allows the user to calculate the profit from buying unid gear, opening, and salvaging. This function will return 1.) the total initial cost, 2.) price of materials if bought from the TP, 3.) revenue earned if all materials sold on the TP minus fees
 
     unid_tp_info:
     {
@@ -467,7 +467,49 @@ def GET_Actualized_Profit_View(request):
 
         return HttpResponse(output, content_type = "text/plain")
 
+@api_view(['GET'])
+def GET_Estimated_Profit_View(request):
+    """
+    This function allows the user to calculate the profit from buying unid gear, opening, and salvaging. Requires input of quantity and type of unid as well as user salvage rates that are updated.
+    This function will return 1.) the total initial cost, 2.) price of materials if bought from the TP, 3.) revenue earned if all materials sold on the TP minus fees
 
+    """
+    if request.method == "GET":
+        unid_type = request.data['unid']
+        unid_count = int(request.data['unid_count'])
 
+        if request.data['unid_price']:
+            unid_price = int(request.data['unid_price'])
+        else:
+            unid_tp_info = requests.get(f'https://api.guildwars2.com/v2/commerce/prices/{unid_type}').json()
+            unid_price = unid_tp_info['buys']['unit_price']
 
+        if request.data['unid'] == '85016':
+            salvage_cost = unid_count * 3
+            salvage_rate = 'blue_salvage_rate'
+        elif request.data['unid'] == '84731':
+            salvage_cost = unid_count * 30
+            salvage_rate = 'green_salvage_rate'
+        elif request.data['unid'] == '83008':
+            salvage_cost = unid_count * 60
+            salvage_rate = 'yellow_salvage_rate'
 
+        gross_revenue_no_tax = 0
+        raw_item_price = 0
+        salvage_rates_query = User_Salvage_Rates.objects.filter(user = request.user).values('gained_item_id', salvage_rate)
+        for item in salvage_rates_query:
+            estimated_count = float(item[salvage_rate] * unid_count)
+            item_id = item['gained_item_id']
+            tp_info = requests.get(f'https://api.guildwars2.com/v2/commerce/prices/{item_id}').json()
+            item_buy_price = tp_info['buys']['unit_price']
+            item_sell_price = tp_info['sells']['unit_price']
+            gross_revenue_no_tax += estimated_count * item_sell_price
+            raw_item_price += estimated_count * item_buy_price
+
+        initial_investment = (unid_count * unid_price) + salvage_cost
+        net_revenue = (gross_revenue_no_tax * 0.85) - initial_investment
+        item_discount = raw_item_price - initial_investment
+        
+        output = f'Cost of initial investment: {initial_investment} copper\nEstimated price if raw materials were bought from TP: {raw_item_price} copper\nEstimated net revenue:{net_revenue} copper\nEstimated discount on raw items: {item_discount} copper'
+
+        return HttpResponse(output, content_type = "text/plain")
