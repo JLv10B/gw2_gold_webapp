@@ -1,17 +1,10 @@
-from django.shortcuts import render, redirect
-from django.http import HttpResponse, FileResponse
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate, login, logout
+from django.http import HttpResponse
 from django.db.models import Max
 from rest_framework import generics, viewsets
-from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework.decorators import api_view
 from .models import CustomUser, User_Salvage_Records, User_Outcome_Data, User_Salvage_Rates
 from .serializer import CustomUser_Serializer, User_Salvage_Record_Serializer, User_Outcome_data_Serializer, User_Salvage_Rate_Serializer
-from django.views.decorators.cache import cache_page
-from django.views.decorators.vary import vary_on_headers
 import requests
 import json
 import os.path
@@ -114,7 +107,6 @@ def GET_User_Raw_Data_View(request):
             if item_slot != None:
                 item_id = item_slot['id']
                 item_count = item_slot['count']
-            # TODO: Is there a better way to handle materials that have value = 0?
             if item_count != 0:
                 if item_id in account_item_dict:
                     account_item_dict[item_id] += item_count
@@ -409,7 +401,7 @@ def POST_User_Salvage_Rate_View(request):
 @api_view(['GET'])
 def GET_Actualized_Profit_View(request):
     """
-    This function allows the user to calculate the profit from buying unid gear, opening, and salvaging. This function will return 1.) the total initial cost, 2.) price of materials if bought from the TP, 3.) revenue earned if all materials sold on the TP minus fees
+    This function allows the user to calculate the profit from buying unid gear, opening, and salvaging. This function will return 1.) the total initial cost, 2.) price of materials if bought from the TP, 3.)gross revenue 4.)net revenue
 
     unid_tp_info:
     {
@@ -460,10 +452,11 @@ def GET_Actualized_Profit_View(request):
             raw_item_price += item.gained_item_count * item_buy_price
 
         initial_investment = (unid_count * unid_price + salvage_cost)
-        net_revenue = (gross_revenue_no_tax * 0.85) - initial_investment
+        gross_revenue = gross_revenue_no_tax * 0.85
+        net_revenue = gross_revenue - initial_investment
         item_discount = raw_item_price - initial_investment
         
-        output = f'Cost of initial investment: {initial_investment} copper\nPrice if raw materials were bought from TP: {raw_item_price} copper\nNet revenue:{net_revenue} copper\nDiscount on raw items: {item_discount} copper'
+        output = f'Cost of initial investment: {initial_investment} copper\nPrice if raw materials were bought from TP: {raw_item_price} copper\ngross revenue: {gross_revenue} copper\nNet revenue:{net_revenue} copper\nDiscount on raw items: {item_discount} copper'
 
         return HttpResponse(output, content_type = "text/plain")
 
@@ -471,8 +464,7 @@ def GET_Actualized_Profit_View(request):
 def GET_Estimated_Profit_View(request):
     """
     This function allows the user to calculate the profit from buying unid gear, opening, and salvaging. Requires input of quantity and type of unid as well as user salvage rates that are updated.
-    This function will return 1.) the total initial cost, 2.) price of materials if bought from the TP, 3.) revenue earned if all materials sold on the TP minus fees
-
+    This function will return 1.) the total initial cost, 2.) price of materials if bought from the TP, 3.)gross revenue, 4.)net revenue
     """
     if request.method == "GET":
         unid_type = request.data['unid']
@@ -507,9 +499,10 @@ def GET_Estimated_Profit_View(request):
             raw_item_price += estimated_count * item_buy_price
 
         initial_investment = (unid_count * unid_price) + salvage_cost
-        net_revenue = (gross_revenue_no_tax * 0.85) - initial_investment
+        gross_revenue = round(gross_revenue_no_tax * 0.85)
+        net_revenue = gross_revenue - initial_investment
         item_discount = raw_item_price - initial_investment
         
-        output = f'Cost of initial investment: {initial_investment} copper\nEstimated price if raw materials were bought from TP: {raw_item_price} copper\nEstimated net revenue:{net_revenue} copper\nEstimated discount on raw items: {item_discount} copper'
+        output = f'Cost of initial investment: {initial_investment} copper\nEstimated price if raw materials were bought from TP: {raw_item_price} copper\nEstimated gross revenue: {gross_revenue} copper\nEstimated net revenue:{net_revenue} copper\nEstimated discount on raw items: {item_discount} copper'
 
         return HttpResponse(output, content_type = "text/plain")

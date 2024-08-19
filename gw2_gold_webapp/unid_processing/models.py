@@ -7,8 +7,6 @@ class CustomUser(AbstractUser):
 
     REQUIRED_FIELDS = ['api_key']
 
-    def __str__(self):
-        return self.username
 
 class User_Salvage_Records(models.Model):
     user = models.ForeignKey(CustomUser, on_delete = models.CASCADE)
