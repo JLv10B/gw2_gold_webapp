@@ -11,6 +11,10 @@ import os.path
 from datetime import datetime
 # Create your views here.
 
+COMMON_UNIDENTIFIED_GEAR = 85016
+MASTERWORK_UNIDENTIFIED_GEAR = 84731
+RARE_UNIDENTIFIED_GEAR = 83008
+
 class CustomUser_List_ViewSet(generics.ListAPIView):
     """
     This view allows admin to viewa list of all users.
@@ -165,18 +169,18 @@ def POST_User_Salvage_Outcome_Data_View(request):
     -record_number
     -user
     -salvage_date
-    -salvaged_item_id: {85016|84731|83008}
+    -salvaged_item_id: {COMMON_UNIDENTIFIED_GEAR|MASTERWORK_UNIDENTIFIED_GEAR|RARE_UNIDENTIFIED_GEAR}
     -salvaged_item_count
 
     user_outcome_data object:
     -record_number
     -gained_item_id
     -gained_item_count
-    """
+    """  
 
     if request.method == "POST":
 
-        new_record_number = User_Salvage_Records.objects.filter(user = request.user).aggregate(largest_record =Max('id'))['largest_record']
+        new_record_number = User_Salvage_Records.objects.filter(user = request.user).aggregate(largest_record = Max('id'))['largest_record']
 
         initial_record = open(f'C:/Users/james/Documents/Coding/gw2_gold_webapp/gw2_gold_webapp/sample_data/{request.user}/{new_record_number}/initial_record', 'r')
         initial_record_json = initial_record.read()
@@ -187,33 +191,33 @@ def POST_User_Salvage_Outcome_Data_View(request):
         final_record_dict = json.loads(final_record_json)
 
         salvage_item_count = 0
-
-        if '85016' in initial_record_dict:
-            if '85016' in final_record_dict:
-                initial_record_dict['85016'] = abs(initial_record_dict['85016'] - final_record_dict['85016'])
-                del final_record_dict['85016']
-            salvage_item_count = initial_record_dict.pop('85016')
-            salvage_item_id = '85016'  
-
-        if '84731' in initial_record_dict:
-            if '84731' in final_record_dict:
-                initial_record_dict['84731'] = abs(initial_record_dict['84731'] - final_record_dict['84731'])
-                del final_record_dict['84731']
-            if initial_record_dict['84731'] > salvage_item_count:
-                salvage_item_count =  initial_record_dict.pop('84731')
-                salvage_item_id = '84731'
-            else:
-                del initial_record_dict['84731']
         
-        if '83008' in initial_record_dict:
-            if '83008' in final_record_dict:
-                initial_record_dict['83008'] = abs(initial_record_dict['83008'] - final_record_dict['83008'])
-                del final_record_dict['83008']
-            if initial_record_dict['83008'] > salvage_item_count:
-                salvage_item_count = initial_record_dict.pop('83008')
-                salvage_item_id = '83008'
+        if str(COMMON_UNIDENTIFIED_GEAR) in initial_record_dict:
+            if str(COMMON_UNIDENTIFIED_GEAR) in final_record_dict:
+                initial_record_dict[str(COMMON_UNIDENTIFIED_GEAR)] = abs(initial_record_dict[str(COMMON_UNIDENTIFIED_GEAR)] - final_record_dict[str(COMMON_UNIDENTIFIED_GEAR)])
+                del final_record_dict[str(COMMON_UNIDENTIFIED_GEAR)]
+            salvage_item_count = initial_record_dict.pop(str(COMMON_UNIDENTIFIED_GEAR))
+            salvage_item_id = str(COMMON_UNIDENTIFIED_GEAR)  
+
+        if str(MASTERWORK_UNIDENTIFIED_GEAR) in initial_record_dict:
+            if str(MASTERWORK_UNIDENTIFIED_GEAR) in final_record_dict:
+                initial_record_dict[str(MASTERWORK_UNIDENTIFIED_GEAR)] = abs(initial_record_dict[str(MASTERWORK_UNIDENTIFIED_GEAR)] - final_record_dict[str(MASTERWORK_UNIDENTIFIED_GEAR)])
+                del final_record_dict[str(MASTERWORK_UNIDENTIFIED_GEAR)]
+            if initial_record_dict[str(MASTERWORK_UNIDENTIFIED_GEAR)] > salvage_item_count:
+                salvage_item_count =  initial_record_dict.pop(str(MASTERWORK_UNIDENTIFIED_GEAR))
+                salvage_item_id = str(MASTERWORK_UNIDENTIFIED_GEAR)
             else:
-                del initial_record_dict['83008']
+                del initial_record_dict[str(MASTERWORK_UNIDENTIFIED_GEAR)]
+        
+        if str(RARE_UNIDENTIFIED_GEAR) in initial_record_dict:
+            if str(RARE_UNIDENTIFIED_GEAR) in final_record_dict:
+                initial_record_dict[str(RARE_UNIDENTIFIED_GEAR)] = abs(initial_record_dict[str(RARE_UNIDENTIFIED_GEAR)] - final_record_dict[str(RARE_UNIDENTIFIED_GEAR)])
+                del final_record_dict[str(RARE_UNIDENTIFIED_GEAR)]
+            if initial_record_dict[str(RARE_UNIDENTIFIED_GEAR)] > salvage_item_count:
+                salvage_item_count = initial_record_dict.pop(str(RARE_UNIDENTIFIED_GEAR))
+                salvage_item_id = str(RARE_UNIDENTIFIED_GEAR)
+            else:
+                del initial_record_dict[str(RARE_UNIDENTIFIED_GEAR)]
 
         User_Salvage_Records.objects.filter(pk = new_record_number).update(
             salvaged_item_id = salvage_item_id, 
@@ -245,17 +249,17 @@ def Manual_User_Salvage_Outcome_Data_View(request):
         data = request.data['items']
         manual_record = json.loads(data)
         salvage_item_count = 0
-        if '85016' in manual_record:
-            salvage_item_count = manual_record.pop('85016')
-            salvage_item_id = '85016'  
+        if str(COMMON_UNIDENTIFIED_GEAR) in manual_record:
+            salvage_item_count = manual_record.pop(str(COMMON_UNIDENTIFIED_GEAR))
+            salvage_item_id = str(COMMON_UNIDENTIFIED_GEAR)  
 
-        if '84731' in manual_record and manual_record['84731'] > salvage_item_count:
-            salvage_item_count =  manual_record.pop('84731')
-            salvage_item_id = '84731'
+        if str(MASTERWORK_UNIDENTIFIED_GEAR) in manual_record and manual_record[str(MASTERWORK_UNIDENTIFIED_GEAR)] > salvage_item_count:
+            salvage_item_count =  manual_record.pop(str(MASTERWORK_UNIDENTIFIED_GEAR))
+            salvage_item_id = str(MASTERWORK_UNIDENTIFIED_GEAR)
 
-        if '83008' in manual_record and manual_record['83008'] > salvage_item_count:
-            salvage_item_count = manual_record.pop('83008')
-            salvage_item_id = '83008'
+        if str(RARE_UNIDENTIFIED_GEAR) in manual_record and manual_record[str(RARE_UNIDENTIFIED_GEAR)] > salvage_item_count:
+            salvage_item_count = manual_record.pop(str(RARE_UNIDENTIFIED_GEAR))
+            salvage_item_id = str(RARE_UNIDENTIFIED_GEAR)
 
         new_record = User_Salvage_Records.objects.create(
             user = CustomUser.objects.get(username = request.user),
@@ -308,22 +312,22 @@ def POST_User_Salvage_Rate_View(request):
 
     salvage_record_dict:
     {
-      85016:[1,3,4,6,7,98],
-      84731:[...],
-      83008:[...]
+      COMMON_UNIDENTIFIED_GEAR:[1,3,4,6,7,98],
+      MASTERWORK_UNIDENTIFIED_GEAR:[...],
+      RARE_UNIDENTIFIED_GEAR:[...]
     }
     
     outcome_data_dict:
     {
       1234:{
-              85016:351681,
-              84731:351849,
-              83008:321651
+              COMMON_UNIDENTIFIED_GEAR:351681,
+              MASTERWORK_UNIDENTIFIED_GEAR:351849,
+              RARE_UNIDENTIFIED_GEAR:321651
             },
       3245:{
-              85016:65816,
-              84731:65149,
-              83008:48315
+              COMMON_UNIDENTIFIED_GEAR:65816,
+              MASTERWORK_UNIDENTIFIED_GEAR:65149,
+              RARE_UNIDENTIFIED_GEAR:48315
             },
       ...
     }
@@ -331,7 +335,7 @@ def POST_User_Salvage_Rate_View(request):
     """
     if request.method == "POST":
 
-        salvage_record_dict = {85016:[], 84731:[], 83008:[]}
+        salvage_record_dict = {COMMON_UNIDENTIFIED_GEAR:[], MASTERWORK_UNIDENTIFIED_GEAR:[], RARE_UNIDENTIFIED_GEAR:[]}
         blue_unid_count = 0
         green_unid_count = 0
         yellow_unid_count = 0
@@ -339,9 +343,9 @@ def POST_User_Salvage_Rate_View(request):
         if User_Salvage_Records.objects.filter(user = request.user).exists():
             queryset = User_Salvage_Records.objects.filter(user = request.user)
             for record in queryset:
-                if record.salvaged_item_id == 85016:
+                if record.salvaged_item_id == COMMON_UNIDENTIFIED_GEAR:
                     blue_unid_count += record.salvaged_item_count
-                elif record.salvaged_item_id == 84731:
+                elif record.salvaged_item_id == MASTERWORK_UNIDENTIFIED_GEAR:
                     green_unid_count += record.salvaged_item_count
                 else:
                     yellow_unid_count += record.salvaged_item_count
@@ -361,7 +365,7 @@ def POST_User_Salvage_Rate_View(request):
                         if data.gained_item_id in outcome_data_dict:
                             outcome_data_dict[data.gained_item_id][unid] += data.gained_item_count
                         else:
-                            outcome_data_dict[data.gained_item_id] = {85016:0, 84731:0, 83008:0}
+                            outcome_data_dict[data.gained_item_id] = {COMMON_UNIDENTIFIED_GEAR:0, MASTERWORK_UNIDENTIFIED_GEAR:0, RARE_UNIDENTIFIED_GEAR:0}
                             outcome_data_dict[data.gained_item_id][unid] = data.gained_item_count
 
         if 'coin' in outcome_data_dict.keys():
@@ -369,15 +373,15 @@ def POST_User_Salvage_Rate_View(request):
 
         for gained_item_id, count_dict in outcome_data_dict.items():
             try:
-               blue_rate = count_dict[85016]/blue_unid_count
+               blue_rate = count_dict[COMMON_UNIDENTIFIED_GEAR]/blue_unid_count
             except:
                 blue_rate = 0 
             try:
-               green_rate = count_dict[84731]/blue_unid_count
+               green_rate = count_dict[MASTERWORK_UNIDENTIFIED_GEAR]/blue_unid_count
             except:
                 green_rate = 0 
             try:
-               yellow_rate = count_dict[83008]/blue_unid_count
+               yellow_rate = count_dict[RARE_UNIDENTIFIED_GEAR]/blue_unid_count
             except:
                 yellow_rate = 0 
             
@@ -476,13 +480,13 @@ def GET_Estimated_Profit_View(request):
             unid_tp_info = requests.get(f'https://api.guildwars2.com/v2/commerce/prices/{unid_type}').json()
             unid_price = unid_tp_info['buys']['unit_price']
 
-        if request.data['unid'] == '85016':
+        if request.data['unid'] == str(COMMON_UNIDENTIFIED_GEAR):
             salvage_cost = unid_count * 3
             salvage_rate = 'blue_salvage_rate'
-        elif request.data['unid'] == '84731':
+        elif request.data['unid'] == str(MASTERWORK_UNIDENTIFIED_GEAR):
             salvage_cost = unid_count * 30
             salvage_rate = 'green_salvage_rate'
-        elif request.data['unid'] == '83008':
+        elif request.data['unid'] == str(RARE_UNIDENTIFIED_GEAR):
             salvage_cost = unid_count * 60
             salvage_rate = 'yellow_salvage_rate'
 

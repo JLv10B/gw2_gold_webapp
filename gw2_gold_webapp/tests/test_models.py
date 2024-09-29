@@ -94,7 +94,7 @@ class User_Outcome_Data_Test(APITestCase):
         #TODO: How do I add request.data['record_number']?
         view = User_Outcome_Data_ViewSet.as_view({'get':'list'}) 
         url = reverse('outcome-data-list')
-        request = self.factory.get(url)
+        request = self.factory.get(url, data= {'record_number': self.outcome_data.id})
         force_authenticate(request, user=self.user)
         response = view(request)
         self.assertEqual(response.status_code, 200)
