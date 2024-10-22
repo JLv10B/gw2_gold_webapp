@@ -1,0 +1,231 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36" version="24.7.12" pages="3">
+  <diagram id="0CGNprcKuBapTFcyDXQ0" name="Process Flow Diagram">
+    <mxGraphModel grid="1" page="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="YzIKBsV560TvH2-uG9U7-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="_txFn17byag3ppB6TWxo-84" target="YzIKBsV560TvH2-uG9U7-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="_txFn17byag3ppB6TWxo-84" value="Find item diff between initial recording and final recording and save data in user_salvage_records and user_outcome_data" style="whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="-260" y="790" width="180" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="Cua8xxENy6mdwP7beP-U-5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="_txFn17byag3ppB6TWxo-86" target="Cua8xxENy6mdwP7beP-U-4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="_txFn17byag3ppB6TWxo-86" value="Perform API call to GW2 trading post to pull buy and sell data for all items" style="whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="-110" y="1088" width="170" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="1o0-O8rsykueLWbvpd26-3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="1o0-O8rsykueLWbvpd26-1" target="1o0-O8rsykueLWbvpd26-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ey1p2mMqEmCjWOY-UJNI-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="1o0-O8rsykueLWbvpd26-1" target="riVCdiFIv1gaZ0l-VwqK-1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="1o0-O8rsykueLWbvpd26-1" value="Taking initial and final recordings for data warehouse" style="html=1;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="45" y="110" width="190" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="nPh6fxqhOuY9c8VHi7Vu-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="1o0-O8rsykueLWbvpd26-2" target="Cua8xxENy6mdwP7beP-U-1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="1o0-O8rsykueLWbvpd26-2" value="Perform API calls to GW2 to retrieve user&#39;s current items" style="html=1;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="-240" y="270" width="140" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="Cua8xxENy6mdwP7beP-U-9" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="1o0-O8rsykueLWbvpd26-4" target="Cua8xxENy6mdwP7beP-U-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="1o0-O8rsykueLWbvpd26-4" value="Save Item id and quantity to initial recording in data warehouse" style="html=1;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="-240.38" y="550" width="140" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="nPh6fxqhOuY9c8VHi7Vu-2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="Cua8xxENy6mdwP7beP-U-1" target="1o0-O8rsykueLWbvpd26-4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Cua8xxENy6mdwP7beP-U-1" value="Create new empty user_salvage_record" style="html=1;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="-270" y="420" width="200" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="Cua8xxENy6mdwP7beP-U-10" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="Cua8xxENy6mdwP7beP-U-3" target="_txFn17byag3ppB6TWxo-86">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Cua8xxENy6mdwP7beP-U-3" value="Calculate profit from salvage process" style="whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="-110" y="998" width="170" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="Cua8xxENy6mdwP7beP-U-4" value="Calculate:&lt;div&gt;1.) Initial investment&lt;/div&gt;&lt;div&gt;2.) Price of mats if bought on TP&lt;/div&gt;&lt;div&gt;3.) Gross revenue&lt;/div&gt;&lt;div&gt;4.) net revenue&lt;/div&gt;" style="whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="-110" y="1208" width="170" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="nPh6fxqhOuY9c8VHi7Vu-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="Cua8xxENy6mdwP7beP-U-8" target="_txFn17byag3ppB6TWxo-84">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Cua8xxENy6mdwP7beP-U-8" value="Perform API call again after user has processed unid and save data in final recording" style="html=1;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="-240" y="680" width="140" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="YzIKBsV560TvH2-uG9U7-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="_txFn17byag3ppB6TWxo-84" target="Cua8xxENy6mdwP7beP-U-3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="YzIKBsV560TvH2-uG9U7-12" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="YzIKBsV560TvH2-uG9U7-8" target="YzIKBsV560TvH2-uG9U7-11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="YzIKBsV560TvH2-uG9U7-8" value="Update User_Salvage_Rates" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="-440" y="1010" width="180" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="YzIKBsV560TvH2-uG9U7-14" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="YzIKBsV560TvH2-uG9U7-11" target="YzIKBsV560TvH2-uG9U7-13">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="YzIKBsV560TvH2-uG9U7-11" value="Finds all record numbers for each unid type for user" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="-440" y="1118" width="180" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="YzIKBsV560TvH2-uG9U7-16" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="YzIKBsV560TvH2-uG9U7-13" target="YzIKBsV560TvH2-uG9U7-15">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="YzIKBsV560TvH2-uG9U7-13" value="Creates dictionary to store all item counts" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="-440" y="1238" width="180" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="YzIKBsV560TvH2-uG9U7-18" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="YzIKBsV560TvH2-uG9U7-15" target="YzIKBsV560TvH2-uG9U7-17">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="YzIKBsV560TvH2-uG9U7-15" value="Uses data in dictionary to calculate salvage rate for each unid type" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="-440" y="1398" width="180" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="YzIKBsV560TvH2-uG9U7-17" value="find diff between user&#39;s salvage rates and outcome data to remove any items that no longer exist or are no longer able to be salvaged from unids" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="-440" y="1508" width="180" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="nPh6fxqhOuY9c8VHi7Vu-10" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="riVCdiFIv1gaZ0l-VwqK-1" target="nPh6fxqhOuY9c8VHi7Vu-9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="riVCdiFIv1gaZ0l-VwqK-1" value="Calculate potential profit" style="whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="280" y="280" width="170" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="nPh6fxqhOuY9c8VHi7Vu-12" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="nPh6fxqhOuY9c8VHi7Vu-9" target="nPh6fxqhOuY9c8VHi7Vu-11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="nPh6fxqhOuY9c8VHi7Vu-9" value="User input unid type, unit count, unid price (optional)" style="whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="280" y="380" width="170" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="nPh6fxqhOuY9c8VHi7Vu-16" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="nPh6fxqhOuY9c8VHi7Vu-11" target="nPh6fxqhOuY9c8VHi7Vu-15">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="nPh6fxqhOuY9c8VHi7Vu-11" value="calculate salvage cost based on unid type" style="whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="280" y="480" width="170" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="nPh6fxqhOuY9c8VHi7Vu-18" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="nPh6fxqhOuY9c8VHi7Vu-13" target="nPh6fxqhOuY9c8VHi7Vu-17">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="nPh6fxqhOuY9c8VHi7Vu-13" value="Perform API call to GW2 trading post to pull buy and sell data for all items as well as estimate count based off of salvage rates" style="whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="280" y="660" width="170" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="ey1p2mMqEmCjWOY-UJNI-3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="nPh6fxqhOuY9c8VHi7Vu-15" target="nPh6fxqhOuY9c8VHi7Vu-13">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="nPh6fxqhOuY9c8VHi7Vu-15" value="Filter user salvage rate objects for gained_item_id and the correct salvage rate" style="whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="280" y="570" width="170" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="nPh6fxqhOuY9c8VHi7Vu-17" value="Calculate:&lt;div&gt;1.) Initial investment&lt;/div&gt;&lt;div&gt;2.) Price of mats if bought on TP&lt;/div&gt;&lt;div&gt;3.) Gross revenue&lt;/div&gt;&lt;div&gt;4.) net revenue&lt;/div&gt;" style="whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="280" y="790" width="170" height="90" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram name="Data Flow Diagram" id="wKwjJYa7GZ6MEAE63vrL">
+    <mxGraphModel grid="1" page="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" pageScale="1" pageWidth="1169" pageHeight="826" background="none" math="0" shadow="0">
+      <root>
+        <mxCell id="JP67ng7rTiDxRUU42EWB-0" />
+        <mxCell id="JP67ng7rTiDxRUU42EWB-1" parent="JP67ng7rTiDxRUU42EWB-0" />
+        <mxCell id="JP67ng7rTiDxRUU42EWB-2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="JP67ng7rTiDxRUU42EWB-1" source="JP67ng7rTiDxRUU42EWB-3" target="JP67ng7rTiDxRUU42EWB-19" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="uB_1pDsh7nuic4icuPQ4-0" value="1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" connectable="0" vertex="1" parent="JP67ng7rTiDxRUU42EWB-2">
+          <mxGeometry x="-0.0857" y="4" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="JP67ng7rTiDxRUU42EWB-3" value="GW2 API" style="html=1;whiteSpace=wrap;" parent="JP67ng7rTiDxRUU42EWB-1" vertex="1">
+          <mxGeometry x="150" y="516" width="110" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="0PgBlcxsgzDHGXtcCIP7-0" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="JP67ng7rTiDxRUU42EWB-1" source="JP67ng7rTiDxRUU42EWB-5" target="JP67ng7rTiDxRUU42EWB-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="uB_1pDsh7nuic4icuPQ4-2" value="3" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" connectable="0" vertex="1" parent="0PgBlcxsgzDHGXtcCIP7-0">
+          <mxGeometry x="-0.4444" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="JP67ng7rTiDxRUU42EWB-5" value="User Input" style="html=1;whiteSpace=wrap;" parent="JP67ng7rTiDxRUU42EWB-1" vertex="1">
+          <mxGeometry x="590" y="390" width="110" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="sX6WPAbTNPmnElcWHYKY-1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="JP67ng7rTiDxRUU42EWB-1" source="JP67ng7rTiDxRUU42EWB-8" target="sX6WPAbTNPmnElcWHYKY-0">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="uB_1pDsh7nuic4icuPQ4-3" value="4" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" connectable="0" vertex="1" parent="sX6WPAbTNPmnElcWHYKY-1">
+          <mxGeometry x="0.15" y="3" relative="1" as="geometry">
+            <mxPoint y="1" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="JP67ng7rTiDxRUU42EWB-8" value="Doritos service" style="html=1;whiteSpace=wrap;" parent="JP67ng7rTiDxRUU42EWB-1" vertex="1">
+          <mxGeometry x="580" y="512" width="130" height="57" as="geometry" />
+        </mxCell>
+        <mxCell id="JP67ng7rTiDxRUU42EWB-18" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="JP67ng7rTiDxRUU42EWB-1" source="JP67ng7rTiDxRUU42EWB-19" target="JP67ng7rTiDxRUU42EWB-8" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="uB_1pDsh7nuic4icuPQ4-1" value="2" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" connectable="0" vertex="1" parent="JP67ng7rTiDxRUU42EWB-18">
+          <mxGeometry x="0.0846" y="3" relative="1" as="geometry">
+            <mxPoint y="1" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="JP67ng7rTiDxRUU42EWB-19" value="Stored in S3&lt;br&gt;Stored Locally for integration testing" style="rounded=0;whiteSpace=wrap;html=1;" parent="JP67ng7rTiDxRUU42EWB-1" vertex="1">
+          <mxGeometry x="330" y="496.5" width="150" height="89" as="geometry" />
+        </mxCell>
+        <mxCell id="sX6WPAbTNPmnElcWHYKY-0" value="Doritos&amp;nbsp;&lt;span style=&quot;background-color: initial;&quot;&gt;Database&lt;/span&gt;" style="html=1;whiteSpace=wrap;" vertex="1" parent="JP67ng7rTiDxRUU42EWB-1">
+          <mxGeometry x="790" y="512" width="150" height="57" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram name="Data Architecture" id="e7e014a7-5840-1c2e-5031-d8a46d1fe8dd">
+    <mxGraphModel grid="1" page="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" pageScale="1" pageWidth="1169" pageHeight="826" background="none" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="72TStroYhu6ZqGuYjQn6-3" value="" style="group" connectable="0" vertex="1" parent="1">
+          <mxGeometry x="290" y="50" width="650" height="620" as="geometry" />
+        </mxCell>
+        <mxCell id="sXf8Y697V5PvGKvaNrhS-185" value="&lt;div style=&quot;box-sizing:border-box;width:100%;background:#e4e4e4;padding:2px;&quot;&gt;User&lt;/div&gt;&lt;table style=&quot;width:100%;font-size:1em;&quot; cellpadding=&quot;2&quot; cellspacing=&quot;0&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;PK&lt;/td&gt;&lt;td&gt;username = string(PK)&lt;br&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;br&gt;&lt;/td&gt;&lt;td&gt;password = string()&lt;br&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;email = emailfield()&lt;br&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;br&gt;&lt;/td&gt;&lt;td&gt;api_key = string()&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;" vertex="1" parent="72TStroYhu6ZqGuYjQn6-3">
+          <mxGeometry x="58.75" y="50" width="180" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="nVxjwAn4Gsnk7FtSNqOE-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="72TStroYhu6ZqGuYjQn6-3" source="_bTDEoVc1O5oLJb-sdAc-4" target="FaEjMS0n0QAS8yL-A_Vg-4">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="278.75" y="305" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="_bTDEoVc1O5oLJb-sdAc-12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#000000;" edge="1" parent="72TStroYhu6ZqGuYjQn6-3" source="FaEjMS0n0QAS8yL-A_Vg-4" target="sXf8Y697V5PvGKvaNrhS-185">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="508.75" y="100" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="FaEjMS0n0QAS8yL-A_Vg-4" value="&lt;div style=&quot;box-sizing:border-box;width:100%;background:#e4e4e4;padding:2px;&quot;&gt;User_Salvage_Rates&lt;/div&gt;&lt;table style=&quot;width:100%;font-size:1em;&quot; cellpadding=&quot;2&quot; cellspacing=&quot;0&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;FK&lt;/td&gt;&lt;td&gt;user = foreignkey()&lt;br&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;br&gt;&lt;/td&gt;&lt;td&gt;gained_item_id = int()&lt;br&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;br&gt;&lt;/td&gt;&lt;td&gt;blue_salvage_rate = decimalfield()&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;br&gt;&lt;/td&gt;&lt;td&gt;green_salvage_rate = decimalfield()&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;br&gt;&lt;/td&gt;&lt;td&gt;yellow_salvage_rate = decimalfield()&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;" vertex="1" parent="72TStroYhu6ZqGuYjQn6-3">
+          <mxGeometry x="388.75" y="237.5" width="240" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="_bTDEoVc1O5oLJb-sdAc-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;strokeColor=#000000;" edge="1" parent="72TStroYhu6ZqGuYjQn6-3" source="_bTDEoVc1O5oLJb-sdAc-3" target="_bTDEoVc1O5oLJb-sdAc-4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="_bTDEoVc1O5oLJb-sdAc-11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="72TStroYhu6ZqGuYjQn6-3" source="_bTDEoVc1O5oLJb-sdAc-3" target="FaEjMS0n0QAS8yL-A_Vg-4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="_bTDEoVc1O5oLJb-sdAc-3" value="&lt;div style=&quot;box-sizing:border-box;width:100%;background:#e4e4e4;padding:2px;&quot;&gt;User_Outcome_Data&lt;/div&gt;&lt;table style=&quot;width:100%;font-size:1em;&quot; cellpadding=&quot;2&quot; cellspacing=&quot;0&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;FK&lt;/td&gt;&lt;td&gt;record_number = foreignkey()&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;gained_item_id = int()&lt;br&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;br&gt;&lt;/td&gt;&lt;td&gt;gained_item_count = int()&lt;span style=&quot;color: rgba(0, 0, 0, 0); font-family: monospace; font-size: 0px; text-wrap: nowrap;&quot;&gt;%3CmxGraphModel%3E%3Croot%3E%3CmxCell%20id%3D%220%22%2F%3E%3CmxCell%20id%3D%221%22%20parent%3D%220%22%2F%3E%3CmxCell%20id%3D%222%22%20value%3D%22%26lt%3Bdiv%20style%3D%26quot%3Bbox-sizing%3Aborder-box%3Bwidth%3A100%25%3Bbackground%3A%23e4e4e4%3Bpadding%3A2px%3B%26quot%3B%26gt%3BUser_Salvage_Data%26lt%3B%2Fdiv%26gt%3B%26lt%3Btable%20style%3D%26quot%3Bwidth%3A100%25%3Bfont-size%3A1em%3B%26quot%3B%20cellpadding%3D%26quot%3B2%26quot%3B%20cellspacing%3D%26quot%3B0%26quot%3B%26gt%3B%26lt%3Btbody%26gt%3B%26lt%3Btr%26gt%3B%26lt%3Btd%26gt%3BPK%26lt%3B%2Ftd%26gt%3B%26lt%3Btd%26gt%3Brecord_number%20%3D%20int()%26lt%3B%2Ftd%26gt%3B%26lt%3B%2Ftr%26gt%3B%26lt%3Btr%26gt%3B%26lt%3Btd%26gt%3BFK%26lt%3B%2Ftd%26gt%3B%26lt%3Btd%26gt%3Buser%20%3D%20foreignkey()%26lt%3Bbr%26gt%3B%26lt%3B%2Ftd%26gt%3B%26lt%3B%2Ftr%26gt%3B%26lt%3Btr%26gt%3B%26lt%3Btd%26gt%3B%26lt%3Bbr%26gt%3B%26lt%3B%2Ftd%26gt%3B%26lt%3Btd%26gt%3Bsalvage_date%20%3D%20datetimefield()%26lt%3B%2Ftd%26gt%3B%26lt%3B%2Ftr%26gt%3B%26lt%3Btr%26gt%3B%26lt%3Btd%26gt%3B%26lt%3Bbr%26gt%3B%26lt%3B%2Ftd%26gt%3B%26lt%3Btd%26gt%3Bsalvaged_item_id%20%3D%20int()%26lt%3Bbr%26gt%3B%26lt%3B%2Ftd%26gt%3B%26lt%3B%2Ftr%26gt%3B%26lt%3Btr%26gt%3B%26lt%3Btd%26gt%3B%26lt%3Bbr%26gt%3B%26lt%3B%2Ftd%26gt%3B%26lt%3Btd%26gt%3Bsalvaged_item_count%20%3D%20int()%26lt%3B%2Ftd%26gt%3B%26lt%3B%2Ftr%26gt%3B%26lt%3Btr%26gt%3B%26lt%3Btd%26gt%3B%26lt%3Bbr%26gt%3B%26lt%3B%2Ftd%26gt%3B%26lt%3Btd%26gt%3Bgained_item_id%20%3D%20int()%26lt%3Bbr%26gt%3B%26lt%3B%2Ftd%26gt%3B%26lt%3B%2Ftr%26gt%3B%26lt%3Btr%26gt%3B%26lt%3Btd%26gt%3B%26lt%3Bbr%26gt%3B%26lt%3B%2Ftd%26gt%3B%26lt%3Btd%26gt%3Bgained_item_count%20%3D%20int()%26lt%3B%2Ftd%26gt%3B%26lt%3B%2Ftr%26gt%3B%26lt%3B%2Ftbody%26gt%3B%26lt%3B%2Ftable%26gt%3B%22%20style%3D%22verticalAlign%3Dtop%3Balign%3Dleft%3Boverflow%3Dfill%3Bhtml%3D1%3BwhiteSpace%3Dwrap%3BfillColor%3D%23fff2cc%3BstrokeColor%3D%23d6b656%3B%22%20vertex%3D%221%22%20parent%3D%221%22%3E%3CmxGeometry%20x%3D%22870%22%20y%3D%22465.5%22%20width%3D%22217.5%22%20height%3D%22150%22%20as%3D%22geometry%22%2F%3E%3C%2FmxCell%3E%3C%2Froot%3E%3C%2FmxGraphModel%3E&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;" vertex="1" parent="72TStroYhu6ZqGuYjQn6-3">
+          <mxGeometry x="40" y="498" width="217.5" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="_bTDEoVc1O5oLJb-sdAc-10" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;" edge="1" parent="72TStroYhu6ZqGuYjQn6-3" source="_bTDEoVc1O5oLJb-sdAc-4" target="sXf8Y697V5PvGKvaNrhS-185">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="_bTDEoVc1O5oLJb-sdAc-4" value="&lt;div style=&quot;box-sizing:border-box;width:100%;background:#e4e4e4;padding:2px;&quot;&gt;User_Salvage_Records&lt;br&gt;&lt;/div&gt;&lt;table style=&quot;width:100%;font-size:1em;&quot; cellpadding=&quot;2&quot; cellspacing=&quot;0&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;FK&lt;/td&gt;&lt;td&gt;user = foreignkey()&lt;br&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;br&gt;&lt;/td&gt;&lt;td&gt;salvaged_date = datetimefield()&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;br&gt;&lt;/td&gt;&lt;td&gt;salvaged_item_id = int()&lt;br&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;br&gt;&lt;/td&gt;&lt;td&gt;salvaged_item_count = int()&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;" vertex="1" parent="72TStroYhu6ZqGuYjQn6-3">
+          <mxGeometry x="40" y="246" width="217.5" height="103" as="geometry" />
+        </mxCell>
+        <mxCell id="72TStroYhu6ZqGuYjQn6-2" value="Doritos Database" style="swimlane;whiteSpace=wrap;html=1;" vertex="1" parent="72TStroYhu6ZqGuYjQn6-3">
+          <mxGeometry width="650" height="620" as="geometry">
+            <mxRectangle width="130" height="30" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
